@@ -4,3 +4,11 @@ this is the file which will containe the tasks and scedual that we will have to 
 * download all the files for the compiler
 * write the syntaks of the RM language 
 
+
+28.4.2010
+1.Install GIt on Windows
+	use this link	
+	http://help.github.com/managing-clients/
+2.clone the project
+	$ git clone git@github.com:laevskiDaniel/RME.git
+
