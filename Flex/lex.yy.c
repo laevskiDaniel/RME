@@ -262,17 +262,13 @@ static void yy_flex_free YY_PROTO(( void * ));
 
 
 #define YY_USES_REJECT
-
-#define yywrap() 1
-#define YY_SKIP_YYWRAP
 typedef unsigned char YY_CHAR;
 FILE *yyin = (FILE *) 0, *yyout = (FILE *) 0;
 typedef int yy_state_type;
-#define YY_FLEX_LEX_COMPAT
 extern int yylineno;
 int yylineno = 1;
-extern char yytext[];
-
+extern char *yytext;
+#define yytext_ptr yytext
 
 static yy_state_type yy_get_previous_state YY_PROTO(( void ));
 static yy_state_type yy_try_NUL_trans YY_PROTO(( yy_state_type current_state ));
@@ -284,18 +280,14 @@ static void yy_fatal_error YY_PROTO(( yyconst char msg[] ));
  */
 #define YY_DO_BEFORE_ACTION \
 	yytext_ptr = yy_bp; \
-	yytext_ptr -= yy_more_len; \
-	yyleng = (int) (yy_cp - yytext_ptr); \
+	yyleng = (int) (yy_cp - yy_bp); \
 	yy_hold_char = *yy_cp; \
 	*yy_cp = '\0'; \
-	if ( yyleng >= YYLMAX ) \
-		YY_FATAL_ERROR( "token too large, exceeds YYLMAX" ); \
-	yy_flex_strncpy( yytext, yytext_ptr, yyleng + 1 ); \
 	yy_c_buf_p = yy_cp;
 
 #define YY_NUM_RULES 57
 #define YY_END_OF_BUFFER 58
-static yyconst short int yy_acclist[271] =
+static yyconst short int yy_acclist[270] =
     {   0,
        58,   56,   57,   55,   56,   57,   54,   57,   56,   57,
        41,   56,   57,   48,   56,   57,   53,   56,   57,   53,
@@ -311,21 +303,21 @@ static yyconst short int yy_acclist[271] =
         2,   32,   56,   57,   53,   56,   57,   32,   56,   57,
        32,   56,   57,   32,   56,   57,   32,   56,   57,   32,
        56,   57,   51,   56,   57,   49,   56,   57,   52,   56,
-       57,   55,   35,   45,   33,   43,   44,   47,   32,   32,
+       57,   55,   35,   34,   45,   33,   43,   44,   47,   32,
        32,   32,   32,   32,   32,   32,   32,   32,   32,   32,
        32,   32,   32,   32,   32,   32,   32,   32,   32,   32,
-       32,   26,   32,   27,   32,   32,   32,   34,   22,   23,
+       32,   32,   26,   32,   27,   32,   32,   32,   22,   23,
        24,   32,   32,   32,   32,    5,   32,   32,   32,   32,
        32,   32,   30,   32,   32,   32,   25,   32,   32,   32,
        32,   32,   32,   32,   32,   32,    8,   32,   32,   21,
 
-       32,   36,   34,   34,   32,   32,   16,   32,   32,   32,
-       32,   18,   32,   32,   32,   32,   32,   32,   32,   32,
-        9,   32,    7,   32,   17,   32,   15,   32,   28,   32,
-       29,   32,    4,   32,   32,   32,    6,   32,   19,   32,
-       13,   32,   32,   32,   10,   32,   32,   32,   14,   32,
-       32,   32,   20,   32,   32,   32,   32,   12,   32,   11,
-       32,   32,    3,   32,   32,   32,    1,   32,   31,   32
+       32,   36,   34,   32,   32,   16,   32,   32,   32,   32,
+       18,   32,   32,   32,   32,   32,   32,   32,   32,    9,
+       32,    7,   32,   17,   32,   15,   32,   28,   32,   29,
+       32,    4,   32,   32,   32,    6,   32,   19,   32,   13,
+       32,   32,   32,   10,   32,   32,   32,   14,   32,   32,
+       32,   20,   32,   32,   32,   32,   12,   32,   11,   32,
+       32,    3,   32,   32,   32,    1,   32,   31,   32
     } ;
 
 static yyconst short int yy_accept[174] =
@@ -335,20 +327,20 @@ static yyconst short int yy_accept[174] =
        50,   53,   56,   59,   63,   67,   70,   73,   76,   79,
        82,   85,   88,   92,   95,   98,  101,  105,  108,  111,
       114,  117,  120,  123,  126,  129,  132,  133,  133,  134,
-      134,  134,  134,  135,  135,  136,  136,  136,  137,  138,
-      139,  140,  141,  142,  143,  144,  145,  146,  147,  148,
-      149,  150,  151,  152,  153,  154,  155,  156,  157,  158,
-      159,  160,  161,  161,  162,  164,  166,  167,  168,  168,
-      168,  169,  170,  171,  173,  174,  175,  176,  178,  179,
+      134,  134,  135,  136,  136,  137,  137,  137,  138,  139,
+      140,  141,  142,  143,  144,  145,  146,  147,  148,  149,
+      150,  151,  152,  153,  154,  155,  156,  157,  158,  159,
+      160,  161,  162,  162,  163,  165,  167,  168,  169,  169,
+      169,  169,  170,  171,  173,  174,  175,  176,  178,  179,
 
       180,  181,  182,  183,  185,  186,  187,  189,  190,  191,
       192,  193,  194,  195,  196,  197,  198,  199,  200,  202,
-      202,  203,  204,  205,  206,  207,  209,  210,  211,  212,
-      214,  215,  216,  217,  218,  219,  220,  221,  223,  225,
-      227,  229,  231,  233,  233,  233,  235,  236,  237,  239,
-      241,  243,  244,  245,  247,  248,  249,  251,  252,  253,
-      255,  256,  257,  258,  260,  262,  263,  265,  266,  267,
-      269,  271,  271
+      202,  203,  203,  204,  205,  206,  208,  209,  210,  211,
+      213,  214,  215,  216,  217,  218,  219,  220,  222,  224,
+      226,  228,  230,  232,  232,  232,  234,  235,  236,  238,
+      240,  242,  243,  244,  246,  247,  248,  250,  251,  252,
+      254,  255,  256,  257,  259,  261,  262,  264,  265,  266,
+      268,  270,  270
     } ;
 
 static yyconst int yy_ec[256] =
@@ -530,32 +522,23 @@ yy_cp = yy_full_match; /* restore poss. backed-over text */ \
 ++yy_lp; \
 goto find_rule; \
 }
-static int yy_more_flag = 0;
-static int yy_more_len = 0;
-#define yymore() (yy_more_flag = 1)
-#define YY_MORE_ADJ yy_more_len
-#ifndef YYLMAX
-#define YYLMAX 8192
-#endif
-
-char yytext[YYLMAX];
-char *yytext_ptr;
+#define yymore() yymore_used_but_not_detected
+#define YY_MORE_ADJ 0
+char *yytext;
 #line 1 "RME.lex"
 #define INITIAL 0
-#line 5 "RME.lex"
+#line 3 "RME.lex"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-  
-
+#include "C:\RME\RiconfigurableMesh\RiconfigurableMesh\debug.h"
 extern int line_number; 
 
 int count_newline(char*);
 
 yywrap() {return 1; }
 
-#line 559 "lex.yy.c"
+#line 542 "lex.yy.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -702,9 +685,9 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 32 "RME.lex"
+#line 28 "RME.lex"
 
-#line 708 "lex.yy.c"
+#line 691 "lex.yy.c"
 
 	if ( yy_init )
 		{
@@ -732,12 +715,6 @@ YY_DECL
 
 	while ( 1 )		/* loops until end-of-file is reached */
 		{
-		yy_more_len = 0;
-		if ( yy_more_flag )
-			{
-			yy_more_len = yyleng;
-			yy_more_flag = 0;
-			}
 		yy_cp = yy_c_buf_p;
 
 		/* Support of yytext. */
@@ -803,292 +780,292 @@ do_action:	/* This label is used only to access EOF actions. */
 	{ /* beginning of action switch */
 case 1:
 YY_RULE_SETUP
-#line 33 "RME.lex"
+#line 29 "RME.lex"
 { return(REGISTER);	}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 34 "RME.lex"
+#line 30 "RME.lex"
 { return(PHASE);	}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 35 "RME.lex"
+#line 31 "RME.lex"
 { return(PROGRAM);	}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 36 "RME.lex"
+#line 32 "RME.lex"
 { return(BBEGIN);	} 
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 37 "RME.lex"
+#line 33 "RME.lex"
 { return(END);		}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 38 "RME.lex"
+#line 34 "RME.lex"
 { return(FALSE);	}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 39 "RME.lex"
+#line 35 "RME.lex"
 { return(TRUE);		}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 40 "RME.lex"
+#line 36 "RME.lex"
 { return(DIM);		}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 41 "RME.lex"
+#line 37 "RME.lex"
 { return(SCAN);		}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 42 "RME.lex"
+#line 38 "RME.lex"
 { return(PRINT);	}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 43 "RME.lex"
+#line 39 "RME.lex"
 { return(EXECUTE);	}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 44 "RME.lex"
+#line 40 "RME.lex"
 { return(CONNECT);	}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 45 "RME.lex"
+#line 41 "RME.lex"
 { return(N0RTH);	}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 46 "RME.lex"
+#line 42 "RME.lex"
 { return(SOUTH);	}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 47 "RME.lex"
+#line 43 "RME.lex"
 { return(WEST);		}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 48 "RME.lex"
+#line 44 "RME.lex"
 { return(EAST);		}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 49 "RME.lex"
+#line 45 "RME.lex"
 { return(VOID);		}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 50 "RME.lex"
+#line 46 "RME.lex"
 { return(MESH);		}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 51 "RME.lex"
+#line 47 "RME.lex"
 { return(INPUT);	}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 52 "RME.lex"
+#line 48 "RME.lex"
 { return(OUTPUT);	}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 53 "RME.lex"
+#line 49 "RME.lex"
 { return(VAR);		}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 54 "RME.lex"
-{ return(1UN);		}
+#line 50 "RME.lex"
+{ return(F_1UN);		}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 55 "RME.lex"
-{ return(2UN);		}
+#line 51 "RME.lex"
+{ return(F_2UN);		}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 56 "RME.lex"
+#line 52 "RME.lex"
 { return(BIN); 		}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 57 "RME.lex"
+#line 53 "RME.lex"
 { return(PST);		}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 58 "RME.lex"
+#line 54 "RME.lex"
 { return(FI);		}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 59 "RME.lex"
+#line 55 "RME.lex"
 { return(IF);		}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 60 "RME.lex"
+#line 56 "RME.lex"
 { return(ELSE); 	}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 61 "RME.lex"
+#line 57 "RME.lex"
 { return(THEN);		}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 62 "RME.lex"
+#line 58 "RME.lex"
 { return(NOT); }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 63 "RME.lex"
+#line 59 "RME.lex"
 { return(PROCEDURE); }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 65 "RME.lex"
-{ yylval.string = (char*) malloc(strlen(yytext)+1);
-						strcpy(yylval.string,yytext); return(IDE); }
+#line 61 "RME.lex"
+{ yylval = (char*) malloc(strlen(yytext)+1);
+						strcpy(yylval,yytext); return(IDE); }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 67 "RME.lex"
-{ yylval.code = atoi(yytext); return(INTCONST); }
+#line 63 "RME.lex"
+{ yylval = atoi(yytext); return(INTCONST); }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 68 "RME.lex"
-{ yylval.real = atof(yytext); return(REALCONST); }
+#line 64 "RME.lex"
+{ yylval = atof(yytext); return(REALCONST); }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 69 "RME.lex"
-{ yylval.string = (char*) malloc(strlen(yytext)+1);
-                strcpy(yylval.string,yytext); return(STRING); }
+#line 65 "RME.lex"
+{ yylval = (char*) malloc(strlen(yytext)+1);
+                strcpy(yylval,yytext); return(STRING); }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 71 "RME.lex"
+#line 67 "RME.lex"
 { line_number += count_newline(yytext); }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 73 "RME.lex"
+#line 69 "RME.lex"
 { return(ADD); }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 74 "RME.lex"
+#line 70 "RME.lex"
 { return(MIN); }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 75 "RME.lex"
+#line 71 "RME.lex"
 { return(MUL); }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 76 "RME.lex"
+#line 72 "RME.lex"
 { return(DIV); }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 77 "RME.lex"
+#line 73 "RME.lex"
 { return(MOD); }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 78 "RME.lex"
+#line 74 "RME.lex"
 { return(LES); }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 79 "RME.lex"
+#line 75 "RME.lex"
 { return(LEQ); }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 80 "RME.lex"
+#line 76 "RME.lex"
 { return(EQU); }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 81 "RME.lex"
+#line 77 "RME.lex"
 { return(NEQ); }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 82 "RME.lex"
+#line 78 "RME.lex"
 { return(GRE); }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 83 "RME.lex"
+#line 79 "RME.lex"
 { return(GEQ); }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 84 "RME.lex"
+#line 80 "RME.lex"
 { return(AND); }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 85 "RME.lex"
+#line 81 "RME.lex"
 { return(OR); }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 86 "RME.lex"
+#line 82 "RME.lex"
 { return(ASSIGN); }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 87 "RME.lex"
+#line 83 "RME.lex"
 { return(LC); } 
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 88 "RME.lex"
+#line 84 "RME.lex"
 { return(RC); } 
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 89 "RME.lex"
+#line 85 "RME.lex"
 { return(yytext[0]); }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 90 "RME.lex"
+#line 86 "RME.lex"
 { line_number++; }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 91 "RME.lex"
+#line 87 "RME.lex"
 
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 92 "RME.lex"
+#line 88 "RME.lex"
 { fprintf(stderr,"unexpected char '%c'!\n",yytext[0]); exit(-1); }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 93 "RME.lex"
+#line 89 "RME.lex"
 ECHO;
 	YY_BREAK
-#line 1092 "lex.yy.c"
+#line 1069 "lex.yy.c"
 			case YY_STATE_EOF(INITIAL):
 				yyterminate();
 
@@ -1945,7 +1922,7 @@ int main()
 	return 0;
 	}
 #endif
-#line 93 "RME.lex"
+#line 89 "RME.lex"
 
 int count_newline(char *text)
 

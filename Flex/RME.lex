@@ -1,13 +1,9 @@
 %option yylineno
-%option noyywrap
-%option lex-compat
 %{ 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-  
-
+#include "C:\RME\RiconfigurableMesh\RiconfigurableMesh\debug.h"
 extern int line_number; 
 
 int count_newline(char*);
@@ -51,8 +47,8 @@ PHASE	("R"|"C"|"B"|"W")
 "Input"			{ return(INPUT);	}
 "Output"			{ return(OUTPUT);	}
 "var"				{ return(VAR);		}
-"1UN"				{ return(1UN);		}
-"2UN"				{ return(2UN);		}
+"1UN"				{ return(F_1UN);		}
+"2UN"				{ return(F_2UN);		}
 "BIN"				{ return(BIN); 		}
 "PST"				{ return(PST);		}
 "fi"            	{ return(FI);		}
@@ -62,12 +58,12 @@ PHASE	("R"|"C"|"B"|"W")
 "NOT"           { return(NOT); }
 "PROCEDURE"     { return(PROCEDURE); }
 
-{IDE}		    { yylval.string = (char*) malloc(strlen(yytext)+1);
-						strcpy(yylval.string,yytext); return(IDE); }
-{INT}        { yylval.code = atoi(yytext); return(INTCONST); }
-{REAL}     { yylval.real = atof(yytext); return(REALCONST); }
-{STRING}   { yylval.string = (char*) malloc(strlen(yytext)+1);
-                strcpy(yylval.string,yytext); return(STRING); }
+{IDE}		    { yylval = (char*) malloc(strlen(yytext)+1);
+						strcpy(yylval,yytext); return(IDE); }
+{INT}        { yylval = atoi(yytext); return(INTCONST); }
+{REAL}     { yylval = atof(yytext); return(REALCONST); }
+{STRING}   { yylval = (char*) malloc(strlen(yytext)+1);
+                strcpy(yylval,yytext); return(STRING); }
 {COMMENT}   { line_number += count_newline(yytext); }
 
 "+"           { return(ADD); }
