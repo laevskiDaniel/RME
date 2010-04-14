@@ -12,57 +12,57 @@
    }
  /* token definitions */ 
 
-% REGISTER  
-% PHASE
-% PROGRAM   
-% BBEGIN  
-% END  
-% FALSE  
-% TRUE  	
-% DIM  
-% SCAN  
-% PRINT   
-% OUTPUT  
-% EXECUTE   
-% CONNECT   
-% NORTH   
-% SOUTH   
-% WEST   
-% EAST   
-% VOID   
-% MESH   
-% INPUT   
-% VAR   
-% BIN   
-% PST   
-% FI   
-% IF   
-% ELSE   
-% THEN   
-% NOT   
-% PROCEDURE   
-% IDE   
-% INTCONST   
-% REALCONST   
-% STRING   
-% ADD   
-% MIN   
-% MUL   
-% DIV   
-% MOD   
-% LES   
-% LEQ   
-% EQU   
-% NEQ   
-% GRE   
-% GEQ   
-% AND   
-% OR   
-% ASSIGN   
-% LC   
-% RC   
-% F_1UN  
-% F_2UN  
+%token REGISTER  
+%token PHASE
+%token PROGRAM   
+%token BBEGIN  
+%token END  
+%token FALSE  
+%token TRUE  	
+%token DIM  
+%token SCAN  
+%token PRINT   
+%token OUTPUT  
+%token EXECUTE   
+%token CONNECT   
+%token NORTH   
+%token SOUTH   
+%token WEST   
+%token EAST   
+%token VOID   
+%token MESH   
+%token INPUT   
+%token VAR   
+%token BIN   
+%token PST   
+%token FI   
+%token IF   
+%token ELSE   
+%token THEN   
+%token NOT   
+%token PROCEDURE   
+%token IDE   
+%token INTCONST   
+%token REALCONST   
+%token STRING   
+%token ADD   
+%token MIN   
+%token MUL   
+%token DIV   
+%token MOD   
+%token LES   
+%token LEQ   
+%token EQU   
+%token NEQ   
+%token GRE   
+%token GEQ   
+%token AND   
+%token OR   
+%token ASSIGN   
+%token LC   
+%token RC   
+%token F_1UN  
+%token F_2UN  
 
 %token<code> INTCONST
 %token<string> IDE
@@ -74,7 +74,7 @@
 
 %%
 
-/* additional  */
+/* additional helper functions */
 int yyerror(char* s)
 {
 	extern int yylineno;	// defined and maintained in lex.c
