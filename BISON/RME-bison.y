@@ -26,6 +26,7 @@
 %token AND OR NOT FALSE TRUE  	
 %token ASSIGN   
 %token LC RC   
+/*TODO: procedure??????????????? */
 %token PROCEDURE F_1UN F_2UN BIN PST   
 
 %token<code> INTCONST
@@ -116,6 +117,4 @@ NODE makenode(int op, NODE s1, NODE s2, NODE s3,int val,char *id)
 {
 	printf ("The function %s is no yet Implemented\n ", "\"NODE makenode(int op, NODE s1, NODE s2, NODE s3,int val,char *id)\"");
 	return NULL /*	Not implemented	*/
-}
-
 }

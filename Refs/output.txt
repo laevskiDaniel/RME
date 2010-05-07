@@ -1,0 +1,63 @@
+l1: 
+ldo i 5 
+ldc i 4 
+les; fjp l2 
+ldo i 5 
+ldc i 1 
+add i 
+sro i 5
+ujp l1; 
+l2:ldc i 3 
+sro i 5
+l3: 
+ldo i 5 
+ldc i 5 
+les; fjp l4 
+ldc i 99 
+sro i 5
+ldo i 5 
+ldc i 1 
+add i 
+sro i 5
+ujp l3; 
+l4:ldc i 3 
+sro i 6
+l5: 
+ldo i 6 
+ldc i 5 
+les; fjp l6 
+ldc i 99 
+sro i 6
+ldo i 5 
+ldc i 1 
+add i 
+sro i 6
+ujp l5; 
+l6:ldo i 7 
+ldc i 5 
+geq; fjp l7 
+ldo i 8 
+ldc i 99 
+add i 
+sro i 7
+ujp l8; 
+l7: ldc i 0 
+sro i 7
+l8: ldo i 9 
+ldo i 8 
+equ; fjp l9 
+ldc i 2222 
+sro i 8
+ujp l10; 
+l9: ldc i 888888 
+sro i 9
+l10: ldo i 10 
+ldc i 5 
+les; fjp l11 
+ldo i 10 
+ldc i 3 
+les; fjp l12 
+ldc i 3 
+sro i 10
+ldc i 7 
+sro i 10

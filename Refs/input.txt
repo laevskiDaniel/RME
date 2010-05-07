@@ -1,0 +1,32 @@
+PROGRAM xx
+{
+	WHILE (x<4)
+	DO
+		x = x + 1;
+	OD
+	
+	FOR(x=3; x<5; x=x+1)
+	DO
+		x=99;
+	OD
+	FOR(y=3; y<5; y=x+1)
+	DO
+		y=99;
+	OD
+	
+	IF (a>=5) THEN
+		a=b+99;
+	ELSE
+		
+		a=0;
+	FI
+	
+	IF (c == b)	THEN
+			b= 2222;
+		ELSE
+		
+			c=888888;
+		FI
+		
+	MULTICOND(abc<5;abc<3){abc= 3;,abc=7;}
+}
