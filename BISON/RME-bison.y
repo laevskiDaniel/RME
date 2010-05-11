@@ -1,9 +1,9 @@
 %{
-	#include "headings.h"
+	#include "heading.h"
 	extern int yylineno;	// defined and maintained in lex.c
 	extern char *yytext;	// defined and maintained in lex.c
 	NODE root;
-	NODE makenode(int op, NODE s1, NODE s2, NODE s3,int val,char *id);
+	NODE makenode(int op, NODE s1, NODE s2, NODE s3, NODE s4,int val,char *id);
 	NODE genLeaf(int op, int val, double rval,char *id);
 	int yyerror(char *s);
 	int yylex(void);
@@ -27,7 +27,7 @@
 %token AND OR NOT FALSE TRUE  	
 %token ASSIGN   
 %token LC RC 
-%token STEP  
+%token STEP CASE STATEMENT
 /*TODO: procedure??????????????? */
 %token PROCEDURE F_1UN F_2UN BIN PST   
 
@@ -40,65 +40,74 @@
 %type<node> program
 %type<node> var_seq nextVar staeps_seq mesh_def register_def out_vec_def in_vec_def dim block 
 %type<node> expr atom
-%type<node> readBlock calcBlock busBlock writeBlock				
-
+%type<node> readBlock calcBlock busBlock writeBlock	stat_seq stat nonlable_stat	singleStep		
+%type<node> readPhase calcPhase busPhase writePhase nextIDE
 /* expresion suntax */
 
 %nonassoc LES LEQ EQU NEQ GRE GEQ
 %left ADD MIN OR MUL DIV AND MOD
 %right NOT DUMMY
 
-%start  program
+%start program
 
 %%
 
 
-program:	PROGRAM var_seq staeps_seq				{$$ = makenode(PROGRAM,$2,$3,NULL,0,"var declaration"); root=$$;}
+program:	PROGRAM IDE var_seq staeps_seq END PROGRAM	{$$ = makenode(PROGRAM,$3,$4,NULL,NULL,0,$2); root=$$;}
 			;
-var_seq:	VAR nextVar								{$$ = makenode(VAR,$2,NULL,NULL,0,NULL);}
+var_seq:	VAR nextVar								{$$ = makenode(VAR,$2,NULL,NULL,NULL,0,NULL);}
 			;
-			
-nextVar:	 mesh_def								{$$ = makenode(MESH,$1,NULL,NULL,0,NULL);}
-			|register_def							{$$ = makenode(REGISTER,$1,NULL,NULL,0,NULL);}
-			|out_vec_def							{$$ = makenode(OUTPUT,$1,NULL,NULL,0,NULL);}
-			|in_vec_def								{$$ = makenode(INPUT,$1,NULL,NULL,0,NULL);}
+/*TODO: nextVAR????????????? */
+nextVar:	 mesh_def						{$$ = makenode(MESH,$1,NULL,NULL,NULL,0,NULL);}
+			|register_def					{$$ = makenode(REGISTER,$1,NULL,NULL,NULL,0,NULL);}
+			|out_vec_def 					{$$ = makenode(OUTPUT,$1,NULL,NULL,NULL,0,NULL);}
+			|in_vec_def						{$$ = makenode(INPUT,$1,NULL,NULL,NULL,0,NULL);}
 			;
-/*TODO: maby seperate by newline*/
-mesh_def:		MESH IDE dim dim					{}
+
+mesh_def:		MESH IDE dim dim					{$$ = makenode(MESH,$3,$4,NULL,NULL,0,$2);}
 				;
-register_def:	REGISTER nextIDE IDE 				{}
+register_def:	REGISTER nextIDE IDE 				{$$ = makenode(REGISTER,$2,NULL,NULL,NULL,0,$3);}
 				;
-nextIDE:		IDE ',' nextIDE						{}
+nextIDE:		IDE ',' nextIDE						{$$ = makenode(REGISTER,$3,NULL,NULL,NULL,0,$1);}
 				;
-out_vec_def:	OUTPUT IDE dim						{}
+out_vec_def:	OUTPUT IDE dim						{$$ = makenode(OUTPUT,NULL,$3,NULL,NULL,0,$2);}
 				;
-in_vec_def:		INPUT IDE dim						{}
+in_vec_def:		INPUT IDE dim						{$$ = makenode(INPUT,NULL,$3,NULL,NULL,0,$2);}
 				;
-dim:			'[' INTCONST ']'					{$$ = getLeaf(MESH,$2,0,"dimention declaration");}
+dim:			'[' INTCONST ']'					{$$ = genLeaf(MESH,$2,0,"dimention declaration");}
 				;
-staeps_seq: 	STEP singleStep							{}
+staeps_seq: 	STEP singleStep						{$$ = makenode(STEP,$2,NULL,NULL,NULL,0,NULL);}
 				;
-singleStep:		readPhase calcPhase busPhase writePhase {}
+singleStep:		readPhase calcPhase busPhase writePhase {$$ = makenode(STEP,$1,$2,$3,$4,0,"step");}
 				;
-readPhase:		'R' ':' readBlock							{}
+readPhase:		'R' ':' readBlock							{$$ = $3;}
 				;
-calcPhase:		'C' ':'	calcBlock							{}
+calcPhase:		'C' ':'	calcBlock							{$$ = $3;}
 				;
-busPhase:		'B' ':' busBlock							{}
+busPhase:		'B' ':' busBlock							{$$ = $3;}
 				;
-writePhase:		'W' ':' writeBlock							{}
+writePhase:		'W' ':' writeBlock							{$$ = $3;}
 				;
 
-readBlock:		block									{}				
+readBlock:		block									{$$ = makenode(PHASE,$1,NULL,NULL,NULL,0,"READ");}				
 				;
-calcBlock:		block									{}				
+calcBlock:		block									{$$ = makenode(PHASE,$1,NULL,NULL,NULL,0,"CALCULATE");}
 				;
-busBlock:		block									{}				
+busBlock:		block									{$$ = makenode(PHASE,$1,NULL,NULL,NULL,0,"BUS");}
 				;
-writeBlock:		block									{}				
+writeBlock:		block									{$$ = makenode(PHASE,$1,NULL,NULL,NULL,0,"WRITE");}
 				;
-block:			DUMMY									{}
+block:			LC stat_seq RC							{$$ = makenode(STATAMENT,$2,NULL,NULLMNULL,0,"statment");}
 				;
+stat_seq: 		stat 			                        {$$=makenode(STATEMENT,$1,NULL,NULL,0,NULL);} 
+				| stat stat_seq 			            {$$=makenode(STATEMENT,$1,$2,NULL,0,NULL);} 
+				;
+stat:    		nonlable_stat                {$$=$1;}
+				;
+nonlable_stat: DUMMY						{}
+				;
+
+			  
 expr:	expr ADD expr { $$ = makenode(ADD,$1,$3,NULL,0,NULL);}
 		|expr MIN expr { $$ = makenode(MIN,$1,$3,NULL,0,NULL);}
 		|expr MUL expr { $$ = makenode(MUL,$1,$3,NULL,0,NULL);}
@@ -130,13 +139,13 @@ atom: INTCONST                   { $$ = genLeaf(INTCONST,$1,0,NULL); }
 /* additional helper functions */
 int yyerror(char* s)
 {
-	fprinff(stderr,"ERROR: %s in line %d at symbol",s,yylineno, yytext);
+	fprintf(stderr,"ERROR: %s in line %d at symbol",s,yylineno, yytext);
   	
   exit(1);
 }
 
 /*==   AST - PART constructs the tree ============================*/
-NODE makenode(int op, NODE s1, NODE s2, NODE s3,int val,char *id)
+NODE makenode(int op, NODE s1, NODE s2, NODE s3, NODE s4,int val,char *id)
 {   int i=0;
 	NODE t;
     
@@ -148,6 +157,7 @@ NODE makenode(int op, NODE s1, NODE s2, NODE s3,int val,char *id)
 	  t->s1 = s1;
 	t->s2 = s2;
 	t->s3 = s3;
+	t->s4 = s4;
         if(id != NULL) 
            t->name=id; 
 	else 
@@ -158,6 +168,8 @@ NODE makenode(int op, NODE s1, NODE s2, NODE s3,int val,char *id)
 	   i++;
      if (s3!=NULL)
 	   i++;
+	 if (s4!=NULL)
+		i++;
 	t->children=i;
 	t->op=op;
 	return(t);

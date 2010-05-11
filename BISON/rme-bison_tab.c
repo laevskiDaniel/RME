@@ -47,24 +47,26 @@
 #define	LC	298
 #define	RC	299
 #define	STEP	300
-#define	PROCEDURE	301
-#define	F_1UN	302
-#define	F_2UN	303
-#define	BIN	304
-#define	PST	305
-#define	INTCONST	306
-#define	IDE	307
-#define	REALCONST	308
-#define	STRING	309
-#define	DUMMY	310
+#define	CASE	301
+#define	STATEMENT	302
+#define	PROCEDURE	303
+#define	F_1UN	304
+#define	F_2UN	305
+#define	BIN	306
+#define	PST	307
+#define	INTCONST	308
+#define	IDE	309
+#define	REALCONST	310
+#define	STRING	311
+#define	DUMMY	312
 
 #line 1 "rme-bison.y"
 
-	#include "headings.h"
+	#include "heading.h"
 	extern int yylineno;	// defined and maintained in lex.c
 	extern char *yytext;	// defined and maintained in lex.c
 	NODE root;
-	NODE makenode(int op, NODE s1, NODE s2, NODE s3,int val,char *id);
+	NODE makenode(int op, NODE s1, NODE s2, NODE s3, NODE s4,int val,char *id);
 	NODE genLeaf(int op, int val, double rval,char *id);
 	int yyerror(char *s);
 	int yylex(void);
@@ -103,23 +105,23 @@ typedef
 
 
 
-#define	YYFINAL		47
+#define	YYFINAL		56
 #define	YYFLAG		-32768
-#define	YYNTBASE	66
+#define	YYNTBASE	68
 
-#define YYTRANSLATE(x) ((unsigned)(x) <= 310 ? yytranslate[x] : 84)
+#define YYTRANSLATE(x) ((unsigned)(x) <= 312 ? yytranslate[x] : 89)
 
 static const char yytranslate[] = {     0,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-     2,     2,     2,     2,     2,     2,     2,     2,     2,    64,
-    65,     2,     2,    56,     2,     2,     2,     2,     2,     2,
-     2,     2,     2,     2,     2,     2,     2,    60,     2,     2,
-     2,     2,     2,     2,     2,    62,    61,     2,     2,     2,
+     2,     2,     2,     2,     2,     2,     2,     2,     2,    66,
+    67,     2,     2,    58,     2,     2,     2,     2,     2,     2,
+     2,     2,     2,     2,     2,     2,     2,    62,     2,     2,
+     2,     2,     2,     2,     2,    64,    63,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-     2,    59,     2,     2,     2,     2,    63,     2,     2,     2,
-    57,     2,    58,     2,     2,     2,     2,     2,     2,     2,
+     2,    61,     2,     2,     2,     2,    65,     2,     2,     2,
+    59,     2,    60,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -140,33 +142,36 @@ static const char yytranslate[] = {     0,
     16,    17,    18,    19,    20,    21,    22,    23,    24,    25,
     26,    27,    28,    29,    30,    31,    32,    33,    34,    35,
     36,    37,    38,    39,    40,    41,    42,    43,    44,    45,
-    46,    47,    48,    49,    50,    51,    52,    53,    54,    55
+    46,    47,    48,    49,    50,    51,    52,    53,    54,    55,
+    56,    57
 };
 
 #if YYDEBUG != 0
 static const short yyprhs[] = {     0,
-     0,     4,     7,     9,    11,    13,    15,    20,    24,    28,
-    32,    36,    40,    43,    48,    52,    56,    60,    64,    66,
-    68,    70,    72,    74,    78,    82,    86,    90,    94,    98,
-   102,   106,   110,   114,   118,   122,   125,   128,   130,   132,
-   134,   136
+     0,     7,    10,    12,    14,    16,    18,    23,    27,    31,
+    35,    39,    43,    46,    51,    55,    59,    63,    67,    69,
+    71,    73,    75,    79,    81,    84,    86,    88,    92,    96,
+   100,   104,   108,   112,   116,   120,   124,   128,   132,   136,
+   139,   142,   144,   146,   148,   150
 };
 
 static const short yyrhs[] = {     3,
-    67,    73,     0,    18,    68,     0,    69,     0,     0,     0,
-    70,     0,    71,     0,    19,    52,    72,    72,     0,    17,
-     0,    52,     0,    52,    56,     0,     0,     6,    52,    72,
-     0,     7,    52,    72,     0,    57,    51,    58,     0,    45,
-    74,     0,    75,    76,    77,    78,     0,    59,    60,    79,
-     0,    61,    60,    80,     0,    62,    60,    81,     0,    63,
-    60,    82,     0,    83,     0,    83,     0,    83,     0,    83,
-     0,    55,     0,     0,    26,     0,     0,     0,    27,     0,
-     0,     0,    28,     0,     0,     0,    29,     0,     0,     0,
-    30,     0,     0,     0,    31,     0,     0,     0,    32,     0,
-     0,     0,    33,     0,     0,     0,    34,     0,     0,     0,
-    35,     0,     0,     0,    36,     0,     0,    64,     0,    65,
-     0,    27,     0,     0,    39,     0,     0,     0,     0,    51,
-     0,    53,     0,    41,     0,    40,     0
+    54,    69,    75,     5,     3,     0,    18,    70,     0,    71,
+     0,     0,     0,    72,     0,    73,     0,    19,    54,    74,
+    74,     0,    17,     0,    54,     0,    54,    58,     0,     0,
+     6,    54,    74,     0,     7,    54,    74,     0,    59,    53,
+    60,     0,    45,    76,     0,    77,    78,    79,    80,     0,
+    61,    62,    81,     0,    63,    62,    82,     0,    64,    62,
+    83,     0,    65,    62,    84,     0,    85,     0,    85,     0,
+    85,     0,    85,     0,    43,    86,    44,     0,    87,     0,
+    87,    86,     0,    88,     0,    57,     0,     0,    26,     0,
+     0,     0,    27,     0,     0,     0,    28,     0,     0,     0,
+    29,     0,     0,     0,    30,     0,     0,     0,    31,     0,
+     0,     0,    32,     0,     0,     0,    33,     0,     0,     0,
+    34,     0,     0,     0,    35,     0,     0,     0,    36,     0,
+     0,    66,     0,    67,     0,    27,     0,     0,    39,     0,
+     0,     0,     0,    53,     0,    55,     0,    41,     0,    40,
+     0
 };
 
 #endif
@@ -175,82 +180,84 @@ static const short yyrhs[] = {     3,
 static const short yyrline[] = { 0,
     56,    58,    61,    62,    63,    64,    67,    69,    71,    73,
     75,    77,    79,    81,    83,    85,    87,    89,    92,    94,
-    96,    98,   100,   102,   103,   104,   105,   106,   107,   108,
-   109,   110,   111,   112,   113,   114,   115,   116,   119,   120,
-   121,   122
+    96,    98,   100,   102,   103,   105,   107,   111,   112,   113,
+   114,   115,   116,   117,   118,   119,   120,   121,   122,   123,
+   124,   125,   128,   129,   130,   131
 };
 
 static const char * const yytname[] = {   "$","error","$undefined.","PROGRAM",
 "BBEGIN","END","OUTPUT","INPUT","EXECUTE","CONNECT","SCAN","PRINT","PHASE","NORTH",
 "SOUTH","WEST","EAST","REGISTER","VAR","MESH","DIM","VOID","IF","FI","ELSE",
 "THEN","ADD","MIN","MUL","DIV","MOD","LES","LEQ","EQU","NEQ","GRE","GEQ","AND",
-"OR","NOT","FALSE","TRUE","ASSIGN","LC","RC","STEP","PROCEDURE","F_1UN","F_2UN",
-"BIN","PST","INTCONST","IDE","REALCONST","STRING","DUMMY","','","'['","']'",
-"'R'","':'","'C'","'B'","'W'","'('","')'","program","var_seq","nextVar","mesh_def",
-"out_vec_def","in_vec_def","dim","staeps_seq","singleStep","readPhase","calcPhase",
-"busPhase","writePhase","readBlock","calcBlock","busBlock","writeBlock","block",
-"writeBlock"
+"OR","NOT","FALSE","TRUE","ASSIGN","LC","RC","STEP","CASE","STATEMENT","PROCEDURE",
+"F_1UN","F_2UN","BIN","PST","INTCONST","IDE","REALCONST","STRING","DUMMY","','",
+"'['","']'","'R'","':'","'C'","'B'","'W'","'('","')'","program","var_seq","nextVar",
+"mesh_def","out_vec_def","in_vec_def","dim","staeps_seq","singleStep","readPhase",
+"calcPhase","busPhase","writePhase","readBlock","calcBlock","busBlock","writeBlock",
+"block","stat_seq","stat","nonlable_stat","stat"
 };
 #endif
 
 static const short yyr1[] = {     0,
-    66,    67,    68,    -1,    68,    68,    69,    -1,    -1,    70,
-    71,    72,    73,    74,    75,    76,    77,    78,    79,    80,
-    81,    82,    83,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+    68,    69,    70,    -1,    70,    70,    71,    -1,    -1,    72,
+    73,    74,    75,    76,    77,    78,    79,    80,    81,    82,
+    83,    84,    85,    86,    86,    87,    88,    -1,    -1,    -1,
     -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-    -1,    -1
+    -1,    -1,    -1,    -1,    -1,    -1
 };
 
 static const short yyr2[] = {     0,
-     3,     2,     1,     1,     1,     1,     4,     3,     3,     3,
+     6,     2,     1,     1,     1,     1,     4,     3,     3,     3,
      3,     3,     2,     4,     3,     3,     3,     3,     1,     1,
-     1,     1,     1,     3,     3,     3,     3,     3,     3,     3,
-     3,     3,     3,     3,     3,     2,     2,     1,     1,     1,
-     1,     1
+     1,     1,     3,     1,     2,     1,     1,     3,     3,     3,
+     3,     3,     3,     3,     3,     3,     3,     3,     3,     2,
+     2,     1,     1,     1,     1,     1
 };
 
 static const short yydefact[] = {     0,
-     0,     0,     0,     0,     0,     0,     2,     3,     5,     6,
-     0,     1,     0,     0,     0,     0,    13,     0,     0,    10,
-    11,     0,     0,     0,     0,     0,     7,    23,    15,    19,
-     0,     0,     0,    12,    16,    20,     0,     0,    14,    17,
-    21,     0,    18,    22,     0,     0,     0
+     0,     0,     0,     0,     0,     0,     0,     2,     3,     5,
+     6,     0,     0,     0,     0,     0,     0,    13,     0,     0,
+     0,    10,    11,     0,     0,     0,     0,     1,     0,     7,
+     0,    15,    19,     0,     0,     0,    12,    27,     0,    24,
+    26,    16,    20,     0,     0,    14,    23,    25,    17,    21,
+     0,    18,    22,     0,     0,     0
 };
 
-static const short yydefgoto[] = {    45,
-     3,     7,     8,     9,    10,    20,    12,    17,    18,    25,
-    33,    39,    29,    35,    40,    43,    30
+static const short yydefgoto[] = {    54,
+     4,     8,     9,    10,    11,    22,    13,    18,    19,    27,
+    36,    46,    32,    42,    49,    52,    33,    39,    40,    41
 };
 
-static const short yypact[] = {    -1,
-   -12,    -6,   -38,   -44,   -42,   -41,-32768,-32768,-32768,-32768,
-   -43,-32768,   -40,   -40,   -40,   -45,-32768,   -39,   -33,-32768,
--32768,   -40,   -36,   -37,   -35,   -34,-32768,-32768,-32768,-32768,
-   -36,   -32,   -31,-32768,-32768,-32768,   -36,   -30,-32768,-32768,
--32768,   -36,-32768,-32768,    20,    21,-32768
+static const short yypact[] = {     2,
+   -48,   -11,    -5,   -37,   -45,   -43,   -41,-32768,-32768,-32768,
+-32768,   -46,    11,   -40,   -40,   -40,   -44,-32768,   -42,    17,
+   -31,-32768,-32768,   -40,   -20,   -38,   -39,-32768,   -33,-32768,
+   -29,-32768,-32768,   -20,   -36,   -35,-32768,-32768,   -15,   -29,
+-32768,-32768,-32768,   -20,   -30,-32768,-32768,-32768,-32768,-32768,
+   -20,-32768,-32768,    31,    33,-32768
 };
 
 static const short yypgoto[] = {-32768,
--32768,-32768,-32768,-32768,-32768,   -10,-32768,-32768,-32768,-32768,
--32768,-32768,-32768,-32768,-32768,-32768,   -28
+-32768,-32768,-32768,-32768,-32768,   -12,-32768,-32768,-32768,-32768,
+-32768,-32768,-32768,-32768,-32768,-32768,   -34,    -6,-32768,-32768
 };
 
 
-#define	YYLAST		32
+#define	YYLAST		34
 
 
-static const short yytable[] = {     4,
-     5,     1,    36,    21,    22,     2,    11,    13,    41,    14,
-    15,    27,     6,    44,    23,    16,    19,    26,    28,    46,
-    47,    24,    31,    34,     0,     0,    32,    37,     0,    42,
-     0,    38
+static const short yytable[] = {    43,
+     5,     6,    23,    24,     1,     2,     3,    12,    14,    50,
+    15,    30,    16,     7,    17,    20,    53,    25,    21,    28,
+    26,    29,    31,    34,    35,    44,    37,    38,    47,    45,
+    55,    51,    56,    48
 };
 
-static const short yycheck[] = {     6,
-     7,     3,    31,    14,    15,    18,    45,    52,    37,    52,
-    52,    22,    19,    42,    60,    59,    57,    51,    55,     0,
-     0,    61,    60,    58,    -1,    -1,    62,    60,    -1,    60,
-    -1,    63
+static const short yycheck[] = {    34,
+     6,     7,    15,    16,     3,    54,    18,    45,    54,    44,
+    54,    24,    54,    19,    61,     5,    51,    62,    59,     3,
+    63,    53,    43,    62,    64,    62,    60,    57,    44,    65,
+     0,    62,     0,    40
 };
 /* -*-C-*-  Note some compilers choke on comments on `#line' lines.  */
 #line 3 "bison.simple"
@@ -746,170 +753,186 @@ yyreduce:
 
 case 1:
 #line 56 "rme-bison.y"
-{yyval.node = makenode(PROGRAM,yyvsp[-1].node,yyvsp[0].node,NULL,0,"var declaration"); root=yyval.node;;
+{yyval.node = makenode(PROGRAM,yyvsp[-3].node,yyvsp[-2].node,NULL,NULL,0,yyvsp[-4].string); root=yyval.node;;
     break;}
 case 2:
 #line 58 "rme-bison.y"
-{yyval.node = makenode(VAR,yyvsp[0].node,NULL,NULL,0,NULL);;
+{yyval.node = makenode(VAR,yyvsp[0].node,NULL,NULL,NULL,0,NULL);;
     break;}
 case 3:
 #line 61 "rme-bison.y"
-{yyval.node = makenode(MESH,yyvsp[0].node,NULL,NULL,0,NULL);;
+{yyval.node = makenode(MESH,yyvsp[0].node,NULL,NULL,NULL,0,NULL);;
     break;}
 case 4:
 #line 62 "rme-bison.y"
-{yyval.node = makenode(REGISTER,yyvsp[0].node,NULL,NULL,0,NULL);;
+{yyval.node = makenode(REGISTER,yyvsp[0].node,NULL,NULL,NULL,0,NULL);;
     break;}
 case 5:
 #line 63 "rme-bison.y"
-{yyval.node = makenode(OUTPUT,yyvsp[0].node,NULL,NULL,0,NULL);;
+{yyval.node = makenode(OUTPUT,yyvsp[0].node,NULL,NULL,NULL,0,NULL);;
     break;}
 case 6:
 #line 64 "rme-bison.y"
-{yyval.node = makenode(INPUT,yyvsp[0].node,NULL,NULL,0,NULL);;
+{yyval.node = makenode(INPUT,yyvsp[0].node,NULL,NULL,NULL,0,NULL);;
     break;}
 case 7:
 #line 67 "rme-bison.y"
-{;
+{yyval.node = makenode(MESH,yyvsp[-1].node,yyvsp[0].node,NULL,NULL,0,yyvsp[-2].string);;
     break;}
 case 8:
 #line 69 "rme-bison.y"
-{;
+{yyval.node = makenode(REGISTER,yyvsp[-1].node,NULL,NULL,NULL,0,yyvsp[0].string);;
     break;}
 case 9:
 #line 71 "rme-bison.y"
-{;
+{yyval.node = makenode(REGISTER,yyvsp[0].node,NULL,NULL,NULL,0,yyvsp[-2].string);;
     break;}
 case 10:
 #line 73 "rme-bison.y"
-{;
+{yyval.node = makenode(OUTPUT,NULL,yyvsp[0].node,NULL,NULL,0,yyvsp[-1].string);;
     break;}
 case 11:
 #line 75 "rme-bison.y"
-{;
+{yyval.node = makenode(INPUT,NULL,yyvsp[0].node,NULL,NULL,0,yyvsp[-1].string);;
     break;}
 case 12:
 #line 77 "rme-bison.y"
-{yyval.node = getLeaf(MESH,yyvsp[-1].code,0,"dimention declaration");;
+{yyval.node = genLeaf(MESH,yyvsp[-1].code,0,"dimention declaration");;
     break;}
 case 13:
 #line 79 "rme-bison.y"
-{;
+{yyval.node = makenode(STEP,yyvsp[0].node,NULL,NULL,NULL,0,NULL);;
     break;}
 case 14:
 #line 81 "rme-bison.y"
-{;
+{yyval.node = makenode(STEP,yyvsp[-3].node,yyvsp[-2].node,yyvsp[-1].node,yyvsp[0].node,0,"step");;
     break;}
 case 15:
 #line 83 "rme-bison.y"
-{;
+{yyval.node = yyvsp[0].node;;
     break;}
 case 16:
 #line 85 "rme-bison.y"
-{;
+{yyval.node = yyvsp[0].node;;
     break;}
 case 17:
 #line 87 "rme-bison.y"
-{;
+{yyval.node = yyvsp[0].node;;
     break;}
 case 18:
 #line 89 "rme-bison.y"
-{;
+{yyval.node = yyvsp[0].node;;
     break;}
 case 19:
 #line 92 "rme-bison.y"
-{;
+{yyval.node = makenode(PHASE,yyvsp[0].node,NULL,NULL,NULL,0,"READ");;
     break;}
 case 20:
 #line 94 "rme-bison.y"
-{;
+{yyval.node = makenode(PHASE,yyvsp[0].node,NULL,NULL,NULL,0,"CALCULATE");;
     break;}
 case 21:
 #line 96 "rme-bison.y"
-{;
+{yyval.node = makenode(PHASE,yyvsp[0].node,NULL,NULL,NULL,0,"BUS");;
     break;}
 case 22:
 #line 98 "rme-bison.y"
-{;
+{yyval.node = makenode(PHASE,yyvsp[0].node,NULL,NULL,NULL,0,"WRITE");;
     break;}
 case 23:
 #line 100 "rme-bison.y"
-{;
+{yyval.node = makenode(STATAMENT,yyvsp[-1].node,NULL,NULLMNULL,0,"statment");;
     break;}
 case 24:
 #line 102 "rme-bison.y"
-{ yyval.node = makenode(ADD,yyvsp[-2].node,yyvsp[0].node,NULL,0,NULL);;
+{yyval.node=makenode(STATEMENT,yyvsp[0].node,NULL,NULL,0,NULL);;
     break;}
 case 25:
 #line 103 "rme-bison.y"
-{ yyval.node = makenode(MIN,yyvsp[-2].node,yyvsp[0].node,NULL,0,NULL);;
+{yyval.node=makenode(STATEMENT,yyvsp[-1].node,yyvsp[0].node,NULL,0,NULL);;
     break;}
 case 26:
-#line 104 "rme-bison.y"
-{ yyval.node = makenode(MUL,yyvsp[-2].node,yyvsp[0].node,NULL,0,NULL);;
+#line 105 "rme-bison.y"
+{yyval.node=yyvsp[0].node;;
     break;}
 case 27:
-#line 105 "rme-bison.y"
-{ yyval.node = makenode(DIV,yyvsp[-2].node,yyvsp[0].node,NULL,0,NULL);;
+#line 107 "rme-bison.y"
+{;
     break;}
 case 28:
-#line 106 "rme-bison.y"
-{ yyval.node = makenode(MOD,yyvsp[-2].node,yyvsp[0].node,NULL,0,NULL);;
+#line 111 "rme-bison.y"
+{ yyval.node = makenode(ADD,yyvsp[-2].node,yyvsp[0].node,NULL,0,NULL);;
     break;}
 case 29:
-#line 107 "rme-bison.y"
-{ yyval.node = makenode(LES,yyvsp[-2].node,yyvsp[0].node,NULL,0,NULL);;
+#line 112 "rme-bison.y"
+{ yyval.node = makenode(MIN,yyvsp[-2].node,yyvsp[0].node,NULL,0,NULL);;
     break;}
 case 30:
-#line 108 "rme-bison.y"
-{ yyval.node = makenode(LEQ,yyvsp[-2].node,yyvsp[0].node,NULL,0,NULL);;
+#line 113 "rme-bison.y"
+{ yyval.node = makenode(MUL,yyvsp[-2].node,yyvsp[0].node,NULL,0,NULL);;
     break;}
 case 31:
-#line 109 "rme-bison.y"
-{ yyval.node = makenode(EQU,yyvsp[-2].node,yyvsp[0].node,NULL,0,NULL);;
+#line 114 "rme-bison.y"
+{ yyval.node = makenode(DIV,yyvsp[-2].node,yyvsp[0].node,NULL,0,NULL);;
     break;}
 case 32:
-#line 110 "rme-bison.y"
-{ yyval.node = makenode(NEQ,yyvsp[-2].node,yyvsp[0].node,NULL,0,NULL);;
+#line 115 "rme-bison.y"
+{ yyval.node = makenode(MOD,yyvsp[-2].node,yyvsp[0].node,NULL,0,NULL);;
     break;}
 case 33:
-#line 111 "rme-bison.y"
-{ yyval.node = makenode(GRE,yyvsp[-2].node,yyvsp[0].node,NULL,0,NULL);;
+#line 116 "rme-bison.y"
+{ yyval.node = makenode(LES,yyvsp[-2].node,yyvsp[0].node,NULL,0,NULL);;
     break;}
 case 34:
-#line 112 "rme-bison.y"
-{ yyval.node = makenode(GEQ,yyvsp[-2].node,yyvsp[0].node,NULL,0,NULL);;
+#line 117 "rme-bison.y"
+{ yyval.node = makenode(LEQ,yyvsp[-2].node,yyvsp[0].node,NULL,0,NULL);;
     break;}
 case 35:
-#line 113 "rme-bison.y"
-{ yyval.node = yyvsp[-1].node; ;
+#line 118 "rme-bison.y"
+{ yyval.node = makenode(EQU,yyvsp[-2].node,yyvsp[0].node,NULL,0,NULL);;
     break;}
 case 36:
-#line 114 "rme-bison.y"
-{ yyval.node = makenode(MIN,yyvsp[0].node,NULL,NULL,0,NULL); ;
+#line 119 "rme-bison.y"
+{ yyval.node = makenode(NEQ,yyvsp[-2].node,yyvsp[0].node,NULL,0,NULL);;
     break;}
 case 37:
-#line 115 "rme-bison.y"
-{ yyval.node =makenode(NOT,yyvsp[0].node,NULL,NULL,0,NULL); ;
+#line 120 "rme-bison.y"
+{ yyval.node = makenode(GRE,yyvsp[-2].node,yyvsp[0].node,NULL,0,NULL);;
     break;}
 case 38:
-#line 116 "rme-bison.y"
-{ yyval.node = yyvsp[0].node; ;
+#line 121 "rme-bison.y"
+{ yyval.node = makenode(GEQ,yyvsp[-2].node,yyvsp[0].node,NULL,0,NULL);;
     break;}
 case 39:
-#line 119 "rme-bison.y"
-{ yyval.node = genLeaf(INTCONST,yyvsp[0].code,0,NULL); ;
+#line 122 "rme-bison.y"
+{ yyval.node = yyvsp[-1].node; ;
     break;}
 case 40:
-#line 120 "rme-bison.y"
-{ yyval.node = genLeaf(REALCONST,0,yyvsp[0].real,NULL);;
+#line 123 "rme-bison.y"
+{ yyval.node = makenode(MIN,yyvsp[0].node,NULL,NULL,0,NULL); ;
     break;}
 case 41:
-#line 121 "rme-bison.y"
-{ yyval.node = genLeaf(TRUE,0,0,NULL); ;
+#line 124 "rme-bison.y"
+{ yyval.node =makenode(NOT,yyvsp[0].node,NULL,NULL,0,NULL); ;
     break;}
 case 42:
-#line 122 "rme-bison.y"
+#line 125 "rme-bison.y"
+{ yyval.node = yyvsp[0].node; ;
+    break;}
+case 43:
+#line 128 "rme-bison.y"
+{ yyval.node = genLeaf(INTCONST,yyvsp[0].code,0,NULL); ;
+    break;}
+case 44:
+#line 129 "rme-bison.y"
+{ yyval.node = genLeaf(REALCONST,0,yyvsp[0].real,NULL);;
+    break;}
+case 45:
+#line 130 "rme-bison.y"
+{ yyval.node = genLeaf(TRUE,0,0,NULL); ;
+    break;}
+case 46:
+#line 131 "rme-bison.y"
 { yyval.node = genLeaf(FALSE,0,0,NULL); ;
     break;}
 }
@@ -1110,7 +1133,7 @@ yyerrhandle:
   yystate = yyn;
   goto yynewstate;
 }
-#line 125 "rme-bison.y"
+#line 134 "rme-bison.y"
 
 
 
@@ -1119,13 +1142,13 @@ yyerrhandle:
 /* additional helper functions */
 int yyerror(char* s)
 {
-	fprinff(stderr,"ERROR: %s in line %d at symbol",s,yylineno, yytext);
+	fprintf(stderr,"ERROR: %s in line %d at symbol",s,yylineno, yytext);
   	
   exit(1);
 }
 
 /*==   AST - PART constructs the tree ============================*/
-NODE makenode(int op, NODE s1, NODE s2, NODE s3,int val,char *id)
+NODE makenode(int op, NODE s1, NODE s2, NODE s3, NODE s4,int val,char *id)
 {   int i=0;
 	NODE t;
     
@@ -1137,6 +1160,7 @@ NODE makenode(int op, NODE s1, NODE s2, NODE s3,int val,char *id)
 	  t->s1 = s1;
 	t->s2 = s2;
 	t->s3 = s3;
+	t->s4 = s4;
         if(id != NULL) 
            t->name=id; 
 	else 
@@ -1147,6 +1171,8 @@ NODE makenode(int op, NODE s1, NODE s2, NODE s3,int val,char *id)
 	   i++;
      if (s3!=NULL)
 	   i++;
+	 if (s4!=NULL)
+		i++;
 	t->children=i;
 	t->op=op;
 	return(t);

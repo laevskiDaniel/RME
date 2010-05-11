@@ -1,0 +1,20 @@
+program test
+var
+	Mesh test[1][20];
+	Register r1,r2,r3;
+	Input in[20];
+	Output out[]20;
+	
+Step:
+	R: Scan(test, [0,0][0,19][0,1], x, SOUTH);
+	C: 
+	B: connect (WEST-EAST);
+	W: print(m, [0,19][][], y, SOUTH);
+Step:
+	R: Scan(test, [0,0][0,19][0,1], x, EAST);
+	C:
+	B: connect (WEST-EAST);
+	W: Print(m, [0,19][][], y, WEST);
+
+	
+end program	

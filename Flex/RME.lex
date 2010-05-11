@@ -3,11 +3,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "C:\RME\RiconfigurableMesh\RiconfigurableMesh\debug.h"
+//#include "C:\RME\RiconfigurableMesh\RiconfigurableMesh\debug.h"
 extern int line_number; 
-
+extern struct yylval;
 int count_newline(char*);
-
 yywrap() {return 1; }
 
 %}
@@ -28,16 +27,17 @@ PHASE	("R"|"C"|"B"|"W")
 %%
 "Register"		{ return(REGISTER);	}
 {PHASE}			{ return(PHASE);	}
-"Program"			{ return(PROGRAM);	}
+"Step:"			{ return(STEP);		}
+"Program"		{ return(PROGRAM);	}
 "Begin"			{ return(BBEGIN);	} 
-"End"				{ return(END);		}
+"End"			{ return(END);		}
 "FALSE"			{ return(FALSE);	}
 "TRUE"			{ return(TRUE);		}
-{DIM}				{ return(DIM);		}
+{DIM}			{ return(DIM);		}
 "Scan"			{ return(SCAN);		}
 "Print"			{ return(PRINT);	}
-"Execute"			{ return(EXECUTE);	}
-"Connect"			{ return(CONNECT);	}
+"Execute"		{ return(EXECUTE);	}
+"Connect"		{ return(CONNECT);	}
 "N0RTH"			{ return(N0RTH);	}
 "SOUTH"			{ return(SOUTH);	}
 "WEST"			{ return(WEST);		}
@@ -58,13 +58,13 @@ PHASE	("R"|"C"|"B"|"W")
 "NOT"           { return(NOT); }
 "PROCEDURE"     { return(PROCEDURE); }
 
-{IDE}		    { yylval = (char*) malloc(strlen(yytext)+1);
-						strcpy(yylval,yytext); return(IDE); }
-{INT}        { yylval = atoi(yytext); return(INTCONST); }
-{REAL}     { yylval = atof(yytext); return(REALCONST); }
-{STRING}   { yylval = (char*) malloc(strlen(yytext)+1);
-                strcpy(yylval,yytext); return(STRING); }
-{COMMENT}   { line_number += count_newline(yytext); }
+{IDE}		    { yylval.string = (char*) malloc(strlen(yytext)+1);
+						strcpy(yylval.string,yytext); return(IDE); }
+{INT}       	{ yylval.code = atoi(yytext); return(INTCONST); }
+{REAL}     		{ yylval.real = atof(yytext); return(REALCONST); }
+{STRING}   		{ yylval.string = (char*) malloc(strlen(yytext)+1);
+                		strcpy(yylval.string,yytext); return(STRING); }
+{COMMENT}   	{ line_number += count_newline(yytext); }
 
 "+"           { return(ADD); }
 "-"           { return(MIN); }
