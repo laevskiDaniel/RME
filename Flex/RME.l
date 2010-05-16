@@ -1,18 +1,18 @@
-%option yylineno
-%option noyywrap
-%option lex-compat
 %{ 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-  
-
+#include "c:\RME\BISON\heading.h"
+#include "C:\RME\BISON\rme-bison_tab.h"
+#define RETURN(X)	fprintf(log,"Line:%d)  %s", line_number,yytext);\
+					return (X);
+					
 extern int line_number; 
-
+extern FILE *log2;
 int count_newline(char*);
+void myPrintToken();
 
-yywrap() {return 1; }
+yywrap() {return 1;}
 
 %}
 
@@ -25,74 +25,79 @@ SCALE	E("+"|"-")?{INT}
 REAL	{INT}?"."{INT}{SCALE}?
 STRING	\"(\\.|[^\\"])*\"
 COMMENT	\(\*[^\*]*\*+([^\*\)][^\*]*\*+)*\)
-DIM 	\[{INT}\]
+
 SIGN	(":"|";"|"("|")"|"."|","|"["|"]")
 PHASE	("R"|"C"|"B"|"W")
 
 %%
-"Register"		{ return(REGISTER);	}
-{PHASE}			{ return(PHASE);	}
-"Program"			{ return(PROGRAM);	}
-"Begin"			{ return(BBEGIN);	} 
-"End"				{ return(END);		}
-"FALSE"			{ return(FALSE);	}
-"TRUE"			{ return(TRUE);		}
-{DIM}				{ return(DIM);		}
-"Scan"			{ return(SCAN);		}
-"Print"			{ return(PRINT);	}
-"Execute"			{ return(EXECUTE);	}
-"Connect"			{ return(CONNECT);	}
-"N0RTH"			{ return(N0RTH);	}
-"SOUTH"			{ return(SOUTH);	}
-"WEST"			{ return(WEST);		}
-"EAST"			{ return(EAST);		}
-"VOID"			{ return(VOID);		}
-"Mesh"			{ return(MESH);		}
-"Input"			{ return(INPUT);	}
-"Output"			{ return(OUTPUT);	}
-"var"				{ return(VAR);		}
-"1UN"				{ return(1UN);		}
-"2UN"				{ return(2UN);		}
-"BIN"				{ return(BIN); 		}
-"PST"				{ return(PST);		}
-"fi"            	{ return(FI);		}
-"if"            	{ return(IF);		}
-"else"	        { return(ELSE); 	}
-"then"			{ return(THEN);		}
-"NOT"           { return(NOT); }
-"PROCEDURE"     { return(PROCEDURE); }
+"Register"		{ myPrintToken(); return(REGISTER);	}
+{PHASE}			{ myPrintToken(); return(PHASE);	}
+"Program"		{ myPrintToken(); return(PROGRAM);	}
+"Begin"			{ myPrintToken(); return(PBEGIN);	} 
+"End"			{ myPrintToken(); return(END);		}
+"FALSE"			{ myPrintToken(); return(FALSE);	}
+"TRUE"			{ myPrintToken(); return(TRUE);		}
 
-{IDE}		    { yylval.string = (char*) malloc(strlen(yytext)+1);
-						strcpy(yylval.string,yytext); return(IDE); }
-{INT}        { yylval.code = atoi(yytext); return(INTCONST); }
-{REAL}     { yylval.real = atof(yytext); return(REALCONST); }
-{STRING}   { yylval.string = (char*) malloc(strlen(yytext)+1);
-                strcpy(yylval.string,yytext); return(STRING); }
-{COMMENT}   { line_number += count_newline(yytext); }
+"Scan"			{ myPrintToken(); return(SCAN);		}
+"Print"			{ myPrintToken(); return(PRINT);	}
+"Execute"		{ myPrintToken(); return(EXECUTE);	}
+"Connect"		{ myPrintToken(); return(CONNECT);	}
+"N0RTH"			{ myPrintToken(); return(NORTH);	}
+"SOUTH"			{ myPrintToken(); return(SOUTH);	}
+"WEST"			{ myPrintToken(); return(WEST);		}
+"EAST"			{ myPrintToken(); return(EAST);		}
+"VOID"			{ myPrintToken(); return(VOID);		}
+"Mesh"			{ myPrintToken(); return(MESH);		}
+"Input"			{ myPrintToken(); return(INPUT);	}
+"Output"		{ myPrintToken(); return(OUTPUT);	}
+"var"			{ myPrintToken(); return(VAR);		}
+"f_1UN"			{ myPrintToken(); return(F_1UN);	}
+"f_2UN"			{ myPrintToken(); return(F_2UN);	}
+"f_BIN"			{ myPrintToken();return(F_BIN); 	}
+"f_PST"			{ myPrintToken();return(F_PST);	}
+"fi"            { myPrintToken();return(FI);		}
+"if"            { myPrintToken();return(IF);		}
+"else"	        { myPrintToken();return(ELSE); 	}
+"then"			{ myPrintToken();return(THEN);		}
+"NOT"           { myPrintToken();return(NOT); 		}
+"PROCEDURE"     { myPrintToken();return(PROCEDURE); }
 
-"+"           { return(ADD); }
-"-"           { return(MIN); }
-"*"           { return(MUL); }
-"/"           { return(DIV); }
-"%"           { return(MOD); }
-"<"           { return(LES); }
-"<="          { return(LEQ); }
-"=="           { return(EQU); }
-"/="           { return(NEQ); }
-">"           { return(GRE); }
-">="          { return(GEQ); }
-"&"           { return(AND); }
-"|"           { return(OR); }
-"="          { return(ASSIGN); }
-"{"         { return(LC); } 
-"}"         { return(RC); } 
-{SIGN}     { return(yytext[0]); }
-"\n"          { line_number++; }
+{IDE}		    { myPrintToken();
+					yylval.string = (char*) malloc(strlen(yytext)+1);
+					strcpy(yylval.string,yytext); return(IDE); }
+{INT}        	{ myPrintToken();
+					yylval.code = atoi(yytext); return(INTCONST); }
+{REAL}     		{ myPrintToken();
+					yylval.real = atof(yytext); return(REALCONST); }
+{STRING}   		{ myPrintToken();
+					yylval.string = (char*) malloc(strlen(yytext)+1);
+					strcpy(yylval.string,yytext); return(STRING); }
+{COMMENT}   	{ line_number += count_newline(yytext); }
+
+"+"           	{ myPrintToken(); return(ADD); }
+"-"           	{ myPrintToken(); return(MIN); }
+"*"           	{ myPrintToken(); return(MUL); }
+"/"           	{ myPrintToken(); return(DIV); }
+"%"           	{ myPrintToken(); return(MOD); }
+"<"           	{ myPrintToken(); return(LES); }
+"<="          	{ myPrintToken(); return(LEQ); }
+"=="           	{ myPrintToken(); return(EQU); }
+"/="           	{ myPrintToken(); return(NEQ); }
+">"           	{ myPrintToken(); return(GRE); }
+">="          	{ myPrintToken(); return(GEQ); }
+"&"           	{ myPrintToken(); return(AND); }
+"|"           	{ myPrintToken(); return(OR); }
+"="          	{ myPrintToken(); return(ASSIGN); }
+"{"         	{ myPrintToken(); return(LC); } 
+"}"         	{  myPrintToken();return(RC); } 
+{SIGN}     		{ myPrintToken();return(yytext[0]); }
+"\n"        	{ line_number++; }
 [\t\f\ ]+
 .             { fprintf(stderr,"unexpected char '%c'!\n",yytext[0]); exit(-1); }
 %%
 int count_newline(char *text)
-
+/*DIM 	\[{INT}\]*/
+/*{DIM}			{ myPrintToken(); return(DIM);		}*/
 { unsigned int i;
   int counter;
 
@@ -103,4 +108,7 @@ int count_newline(char *text)
       }
   return(counter);
 }
-
+void myPrintToken()
+{
+	fprintf(log2,"%s\n",(yytext)?(yytext):("Error\n"));
+}

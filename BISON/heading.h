@@ -18,4 +18,6 @@ typedef struct node {    /* abstract syntax tree record */
 } *NODE;
 
 
+NODE makenode(int op, NODE s1, NODE s2, NODE s3, NODE s4,int val,char *id);
+
 extern NODE root;
