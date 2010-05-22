@@ -18,6 +18,7 @@ yywrap() {return 1;}
 
 
 DIGIT	[0-9]
+PHASE	("R:"|"C:"|"B:"|"W:")
 LETTER	[a-zA-Z]
 IDE		{LETTER}({LETTER}|{DIGIT})*
 INT		{DIGIT}+
@@ -26,8 +27,8 @@ REAL	{INT}?"."{INT}{SCALE}?
 STRING	\"(\\.|[^\\"])*\"
 COMMENT	\(\*[^\*]*\*+([^\*\)][^\*]*\*+)*\)
 
-SIGN	(":"|";"|"("|")"|"."|","|"["|"]")
-PHASE	("R"|"C"|"B"|"W")
+SIGN	(";"|"("|")"|"."|","|"["|"]")
+CLASS	{IDE}"."{IDE}
 
 %%
 "Register"		{ myPrintToken(); return(REGISTER);	}
@@ -37,12 +38,12 @@ PHASE	("R"|"C"|"B"|"W")
 "End"			{ myPrintToken(); return(END);		}
 "FALSE"			{ myPrintToken(); return(FALSE);	}
 "TRUE"			{ myPrintToken(); return(TRUE);		}
-
+"Step"			{ myPrintToken(); return(STEP);		}
 "Scan"			{ myPrintToken(); return(SCAN);		}
 "Print"			{ myPrintToken(); return(PRINT);	}
 "Execute"		{ myPrintToken(); return(EXECUTE);	}
 "Connect"		{ myPrintToken(); return(CONNECT);	}
-"N0RTH"			{ myPrintToken(); return(NORTH);	}
+"N0RTH"			{ myPrintToken(); return(N0RTH);	}
 "SOUTH"			{ myPrintToken(); return(SOUTH);	}
 "WEST"			{ myPrintToken(); return(WEST);		}
 "EAST"			{ myPrintToken(); return(EAST);		}
@@ -61,7 +62,7 @@ PHASE	("R"|"C"|"B"|"W")
 "then"			{ myPrintToken();return(THEN);		}
 "NOT"           { myPrintToken();return(NOT); 		}
 "PROCEDURE"     { myPrintToken();return(PROCEDURE); }
-
+{CLASS}			{ myPrintToken();return(CLASS); }
 {IDE}		    { myPrintToken();
 					yylval.string = (char*) malloc(strlen(yytext)+1);
 					strcpy(yylval.string,yytext); return(IDE); }
@@ -72,7 +73,8 @@ PHASE	("R"|"C"|"B"|"W")
 {STRING}   		{ myPrintToken();
 					yylval.string = (char*) malloc(strlen(yytext)+1);
 					strcpy(yylval.string,yytext); return(STRING); }
-{COMMENT}   	{ line_number += count_newline(yytext); }
+{COMMENT}   	{ line_number += count_newline(yytext);
+					return(COMMENT);}
 
 "+"           	{ myPrintToken(); return(ADD); }
 "-"           	{ myPrintToken(); return(MIN); }
@@ -91,7 +93,7 @@ PHASE	("R"|"C"|"B"|"W")
 "{"         	{ myPrintToken(); return(LC); } 
 "}"         	{  myPrintToken();return(RC); } 
 {SIGN}     		{ myPrintToken();return(yytext[0]); }
-"\n"        	{ line_number++; }
+"\n"        	{  myPrintToken();line_number++; }
 [\t\f\ ]+
 .             { fprintf(stderr,"unexpected char '%c'!\n",yytext[0]); exit(-1); }
 %%
@@ -110,5 +112,7 @@ int count_newline(char *text)
 }
 void myPrintToken()
 {
-	fprintf(log2,"%s\n",(yytext)?(yytext):("Error\n"));
+	#ifdef DEBUG
+		fprintf(log2,"%s",(yytext)?(yytext):("Error\n"));
+	#endif
 }
