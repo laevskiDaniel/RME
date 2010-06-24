@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-//#include <FILE.h>
 
 
 typedef struct node {    /* abstract syntax tree record */
@@ -19,5 +18,6 @@ typedef struct node {    /* abstract syntax tree record */
 
 
 NODE makenode(int op, NODE s1, NODE s2, NODE s3, NODE s4,int val,char *id);
+NODE genLeaf(int op, int val, double rval,char *id);
 
 extern NODE root;

@@ -3,8 +3,14 @@
 	#include <malloc.h>
 	#include <string.h>
 	#include "heading.h"
+	/*
+	#define YYERROR_VERBOSE 
+	#define YYPARSE_PARAM parm
+	#define YYLEX_PARAM parm
+	*/
 	extern int yylineno;	// defined and maintained in lex.c
 	extern char *yytext;	// defined and maintained in lex.c
+	extern FILE* dbglog;
 	int stepNum = 0;
 	int line_number = 1;
 	char buf[12];
@@ -12,6 +18,7 @@
 	NODE makenode(int op, NODE s1, NODE s2, NODE s3, NODE s4,int val,char *id);
 	NODE genLeaf(int op, int val, double rval,char *id);
 	int yyerror(char *s);
+	int printError(char *s);
 	int yylex(void);
 %}
 
@@ -23,17 +30,17 @@
    }
  /* token definitions */ 
 
-%token PROGRAM PBEGIN END STATAMENT 
+%token PROGRAM PBEGIN END STATEMENT
 %token VECTOR OUTPUT INPUT   
-%token EXECUTE CONNECT SCAN PRINT
+%token EXECUTE CONNECT SCAN PRINTV
 %token PHASE   
 %token REGISTER VAR MESH DIM VOID 
-%token IF FI ELSE THEN
+%token IF ELSE THEN
 %token ADD MIN MUL DIV MOD LES LEQ EQU NEQ GRE GEQ   
 %token AND OR NOT FALSE TRUE  	
 %token ASSIGN 
 %token LC RC 
-%token STEP CASE STATEMENT
+%token STEP CASE
 /*TODO: procedure??????????????? */
 %token PROCEDURE F_1UN F_2UN F_BIN F_PST   
 
@@ -45,12 +52,12 @@
 
 %type<node> program
 %type<node> expr atom asingn_stat
-%type<node> var_seq nextVar staeps_seq mesh_def register_def out_vec_def in_vec_def dim block singleVar
-%type<node> readBlock calcBlock busBlock writeBlock stat_seq stat singleStep nextStep phase	if_stat connect conect_stat
+%type<node> var_seq nextVar staeps_seq mesh_def register_def out_vec_def in_vec_def dim block singleVar class if_stm_end
+%type<node> readBlock calcBlock busBlock writeBlock stat_seq stat singleStep nextStep phase	if_stat connect conect_stat ide
 %type<node> readPhase calcPhase busPhase writePhase nextIDE nextVector vector scan_stat print_stat exe_stat pos pos3/* expresion suntax */
+%type<node> functions pst bin f_1un f_2un
 
-
-%nonassoc LES LEQ EQU NEQ GRE GEQ
+%nonassoc LES LEQ EQU NEQ GRE GEQ DIM3 FI
 %left ADD MIN OR MUL DIV AND MOD
 %right NOT DUMMY
 
@@ -60,6 +67,8 @@
 
 
 program:	PROGRAM IDE var_seq staeps_seq END PROGRAM	{$$ = makenode(PROGRAM,$3,$4,NULL,NULL,0,$2); root=$$;}
+		|	error	IDE 							 	{printError("Unundentify token");}
+		|	PROGRAM error var_seq 						{printError("Illigal program name");}
 		;
 /*  */
 var_seq:	VAR nextVar 					{ $$ = $2;}/*{$$ = makenode(VAR,$2,NULL,NULL,NULL,0,"var_seq");}*/
@@ -103,7 +112,7 @@ vector:         IDE dim		 				{ $$ = makenode(VECTOR,$2,NULL,NULL,NULL,0,$1);}
 		;
 
 nextVector:	nextVector ',' vector			{$$ = makenode(VECTOR,$1,$3,NULL,NULL,0,NULL);}
-		| vector 							{ $$=$1}/*{ $$ = makenode(VECTOR,$1,NULL,NULL,NULL,0,NULL);}*/
+		| vector 							{ $$=$1;}/*{ $$ = makenode(VECTOR,$1,NULL,NULL,NULL,0,NULL);}*/
 		;
 
 
@@ -112,23 +121,28 @@ dim:		'[' INTCONST ']'				{$$ = genLeaf(DIM,$2,0,"dimention declaration");}
 		;
 
 /* Algorithm Steps */
-staeps_seq: 	 nextStep 				{$$ = makenode(STEP,$1,NULL,NULL,NULL,0,NULL);}
+staeps_seq: 	 nextStep 						{ $$=$1;} /*{$$ = makenode(STEP,$1,NULL,NULL,NULL,0,NULL);}*/
 		;
 
 nextStep:	STEP singleStep nextStep /* nextStep */				{ $$ = makenode(STEP,$2,$3,NULL,NULL,0,NULL);}
+		| error '\n'											{printError("undefined token","blabla");}
 		|STEP singleStep												{ $$ = makenode(STEP,$2,NULL,NULL,NULL,0,NULL);}
 		/*|DUMMY						{ $$ = makenode(DUMMY,NULL,NULL,NULL,NULL,0,NULL); }*/
 		;
 
-singleStep:	 readPhase calcPhase busPhase writePhase  {$$ = makenode(STEP,$1,$2,$3,$4,0,itoa(stepNum,buf,10)); stepNum++ ;}
+singleStep:	 readPhase calcPhase busPhase writePhase  {$$ = makenode(STEP,$1,$2,$3,$4,stepNum,itoa(stepNum,buf,10)); stepNum++ ;}
 				;
-readPhase:	PHASE readBlock				{$$ = makenode(PHASE,$2,NULL,NULL,NULL,0,"read");}
+readPhase:	PHASE readBlock				{ $$=$2;} /*{$$ = makenode(PHASE,$2,NULL,NULL,NULL,0,"read");}*/
+			| PHASE						{ $$ = genLeaf(DUMMY,0,0,"EMPTY READ PHASE");}
 		;
-calcPhase:	PHASE calcBlock				{$$ = makenode(PHASE,$2,NULL,NULL,NULL,0,"calc");}
+calcPhase:	PHASE calcBlock				{ $$=$2;} /*{$$ = makenode(PHASE,$2,NULL,NULL,NULL,0,"calc");}*/
+			| PHASE						{ $$ = genLeaf(DUMMY,0,0,"EMPTY CALCULATE PHASE");}
 		;
-busPhase:	PHASE busBlock				{$$ = makenode(PHASE,$2,NULL,NULL,NULL,0,"bus");}
+busPhase:	PHASE busBlock				{ $$=$2;} /*{$$ = makenode(PHASE,$2,NULL,NULL,NULL,0,"bus");}*/
+			| PHASE						{ $$ = genLeaf(DUMMY,0,0,"EMPTY BUS PHASE");}
 		;		
-writePhase:	PHASE writeBlock				{$$ = makenode(PHASE,$2,NULL,NULL,NULL,0,"write");}
+writePhase:	PHASE writeBlock			{ $$=$2;} /*{$$ = makenode(PHASE,$2,NULL,NULL,NULL,0,"write");}*/
+			| PHASE						{ $$ = genLeaf(DUMMY,0,0,"EMPTY WRITE PHASE");}
 		;
 
 readBlock:	block						{$$ = makenode(PHASE,$1,NULL,NULL,NULL,0,"READ");}				
@@ -141,24 +155,41 @@ writeBlock:	block						{$$ = makenode(PHASE,$1,NULL,NULL,NULL,0,"WRITE");}
 		;
 		
 		
-block:	stat_seq						{$$ = makenode(0,$1,NULL,NULL,NULL,0,NULL);}
+block:	stat_seq						{$$ = $1;} /*{$$ = makenode(0,$1,NULL,NULL,NULL,0,NULL);}*/
 	;
-scan_stat:  SCAN '(' IDE ',' pos3 ',' IDE ',' phase ')' ';' { makenode(SCAN,$3,$5,$7,$9,0,NULL);}
+scan_stat:  SCAN '(' ide ',' pos3 ',' ide ',' phase ')' ';' {$$ = makenode(SCAN,$3,$5,$7,$9,0,NULL);}
 		;
 		
-print_stat: PRINT '(' IDE ',' pos3 ',' IDE ',' phase ')' ';' {makenode(PRINT,$3,$5,$7,$9,0,NULL);}
+print_stat: PRINTV '(' ide ',' pos3 ',' ide ',' phase ')' ';' {$$ = makenode(PRINTV,$3,$5,$7,$9,0,NULL);}
 		;
 /*TODO:  on execute IDE or vector*/
-exe_stat:	EXECUTE '(' IDE ',' pos3 ',' IDE ',' phase ')' ';' {makenode(EXECUTE,$3,$5,$7,$9,0,NULL);}
+exe_stat:	EXECUTE '(' ide ',' pos3 ',' atom ',' phase ')' ';' {$$ = makenode(EXECUTE,$3,$5,$7,$9,0,NULL);}
+			/*|EXECUTE '(' ide ',' pos3 ',' INTCONST ',' phase ')' ';' {$$ = makenode(EXECUTE,$3,$5,$7,$9,0,NULL);}*/
 
-conect_stat:	CONNECT '(' connect ')' ';'					{ makenode(CONNECT,$3,NULL,NULL,NULL,0,NULL);}
-				|CONNECT '(' connect  ',' connect ')' ';'	{makenode(CONNECT,$3,$5,NULL,NULL,0,NULL);}
+conect_stat:	CONNECT '(' connect ')' ';'					{ $$ = makenode(CONNECT,$3,NULL,NULL,NULL,0,"Connect");}
+				|CONNECT '(' connect  ',' connect ')' ';'	{$$ = makenode(CONNECT,$3,$5,NULL,NULL,0,"Connect");}
 		;
+functions:		pst										{$$=$1;}
+				|bin										{$$=$1;}
+				|f_1un									{$$=$1;}
+				|f_2un									{$$=$1;}
+				;
+		
+pst:			F_PST '('	ide ')' ';'						{ $$ = makenode(F_PST,$3,NULL,NULL,NULL,0,NULL);}
+		;
+f_1un:			F_1UN '(' ide ')' ';'					{ $$ = makenode(F_1UN,$3,NULL,NULL,NULL,0,NULL);}
+		;
+f_2un:			F_2UN '(' ide ')' ';'					{ $$ = makenode(F_2UN,$3,NULL,NULL,NULL,0,NULL);}
+		;
+bin:			F_BIN '(' ide ')' ';'						{ $$ = makenode(F_BIN,$3,NULL,NULL,NULL,0,NULL);}
+		;
+
+
 pos3: 	pos pos pos 						{$$ = makenode(DIM,$1,$2,$3,NULL,0,NULL);}
 		|pos pos 							{$$ = makenode(DIM,$1,$2,NULL,NULL,0,NULL);}
 	;
 
-pos:	'[' INTCONST ',' INTCONST ']' 		{$$ = makenode(DIM,$2,$4,NULL,NULL,0,NULL);}
+pos:	'[' atom ',' atom ']' 		{$$ = makenode(DIM,$2,$4,NULL,NULL,0,NULL);}
 		|'['']' 							{$$ = genLeaf(DIM,0,0,NULL);}
 		;
 
@@ -172,24 +203,32 @@ connect: 	phase MIN phase							{$$ = makenode(CONNECT,$1,$3,NULL,NULL,0,NULL);}
 			|phase MIN phase MIN phase MIN phase	{$$ = makenode(CONNECT,$1,$3,$5,$7,0,NULL);}
 		;
 
-asingn_stat: phase ASSIGN INTCONST ';'			{ $$ = makenode(ASSIGN,$1,$3,NULL,NULL,0,NULL); }
-			| CLASS ASSIGN INTCONST ';'			{ $$ = makenode(ASSIGN,$1,$3,NULL,NULL,0,NULL); }
+asingn_stat: phase ASSIGN atom ';'			{ $$ = makenode(ASSIGN, $1,$3,NULL,NULL,0,"phase"); }
+			| class ASSIGN atom ';'			{ $$ = makenode(ASSIGN, $1,$3,NULL,NULL,0,"class"); }
+			| ide ASSIGN atom ';'			{ $$ = makenode(ASSIGN, $1,$3,NULL,NULL,0,"ide"); }
 		;
-stat_seq: 	stat stat_seq 		        {$$=makenode(STATEMENT,$1,$2,NULL,NULL,0,NULL);} 
-			|stat						{$$=makenode(STATEMENT,$1,NULL,NULL,NULL,0,NULL);}
+		
+class:      ide '.' ide								{$$ = makenode(CLASS,$1,$3,NULL,NULL,0,"ide");}
+			|ide '.' phase							{$$ = makenode(CLASS,$1,$3,NULL,NULL,0,"phase");} 
 		;
+stat_seq: 	  stat_seq stat		        {$$=makenode(STATEMENT,$1,$2,NULL,NULL,0,"stat stat_seq");} 
+			|stat						{$$=makenode(STATEMENT,$1,NULL,NULL,NULL,0,"stat");}
+			;
+		
 
-stat:    scan_stat 					{$$ = makenode(STATAMENT,$1,NULL,NULL,NULL,0,"Scan");}
-			|print_stat					{$$ = makenode(STATAMENT,$1,NULL,NULL,NULL,0,"statment");}
-			|exe_stat					{$$ = makenode(STATAMENT,$1,NULL,NULL,NULL,0,"statment");}
+stat:    scan_stat 					{$$=$1;} /*{$$ = makenode(STATEMENT,$1,NULL,NULL,NULL,0,"Scan");}*/
+			|print_stat					{$$=$1;} /*{$$ = makenode(STATEMENT,$1,NULL,NULL,NULL,0,"statment");}*/
+			|exe_stat					{$$=$1;} /*{$$ = makenode(STATEMENT,$1,NULL,NULL,NULL,0,"statment");}*/
 			|if_stat					{$$ = $1;}
 			|conect_stat				{$$ = $1;}
 			|asingn_stat				{$$ = $1;}
+			|functions					{$$ = $1;}
 		;
 /*TODO: complex if expression*/
-if_stat:		IF 	expr THEN stat_seq FI			{$$ = makenode(IF,$2,$4,NULL,NULL,0,NULL);}
+if_stat:		IF 	expr THEN stat_seq if_stm_end			{$$ = makenode(IF,$2,$4,$5,NULL,0,NULL);}
+			| IF expr THEN stat_seq ELSE stat_seq if_stm_end {$$ = makenode(ELSE,$2,$4,$6,$7,0,NULL);}
 		;
-		
+if_stm_end:	FI												{$$ = genLeaf(FI,0,0,NULL);}
 
 expr:	expr ADD expr { $$ = makenode(ADD,$1,$3,NULL,NULL,0,NULL);}
 		|expr MIN expr { $$ = makenode(MIN,$1,$3,NULL,NULL,0,NULL);}
@@ -202,6 +241,8 @@ expr:	expr ADD expr { $$ = makenode(ADD,$1,$3,NULL,NULL,0,NULL);}
 		|expr NEQ expr { $$ = makenode(NEQ,$1,$3,NULL,NULL,0,NULL);}
 		|expr GRE expr { $$ = makenode(GRE,$1,$3,NULL,NULL,0,NULL);}
 		|expr GEQ expr { $$ = makenode(GEQ,$1,$3,NULL,NULL,0,NULL);}
+		|expr AND AND expr	{ $$ = makenode(AND,$1,$4,NULL,NULL,0,NULL);}
+		|expr OR OR expr 	{ $$ = makenode(OR ,$1,$4,NULL,NULL,0,NULL);}
 		| '(' expr ')'               { $$ = $2; }
 		| MIN atom %prec DUMMY    { $$ = makenode(MIN,$2,NULL,NULL,NULL,0,NULL); }
 		| NOT atom                   { $$ =makenode(NOT,$2,NULL,NULL,NULL,0,NULL); }
@@ -212,7 +253,11 @@ atom: INTCONST                   { $$ = genLeaf(INTCONST,$1,0,NULL); }
       | REALCONST                  { $$ = genLeaf(REALCONST,0,$1,NULL);}
       | TRUE                       { $$ = genLeaf(TRUE,0,0,NULL); }
       | FALSE                      { $$ = genLeaf(FALSE,0,0,NULL); }
+	  | phase						{$$ = $1;}
+	  | class						{$$ = $1;}
+	  | ide							{$$ = $1;}
       ;
+ide: 	IDE						{$$ = genLeaf(IDE,0,0,$1);}
 
 %%
 
@@ -220,12 +265,18 @@ atom: INTCONST                   { $$ = genLeaf(INTCONST,$1,0,NULL); }
 
 
 /* additional helper functions */
-int yyerror(char* s)
-{
-	fprintf(stderr,"ERROR: %s in line %d at symbol",s,6, yytext);
-  exit(1);
+int yyerror(char* errorStr, char* hint)
+{	
+//		fprintf(dbglog,"ERROR: %s in line %d at symbol %s\n",s,6, yytext);
+		fprintf(dbglog,"%s (%d) Error: %s %s %s. \n",__FILE__,line_number,errorStr, yytext,hint);
+		return 1;
 }
-
+int printError(char* s)
+{	
+//		fprintf(dbglog,"ERROR: %s in line %d at symbol %s",s,6, yytext);
+		fprintf(dbglog,"%s (%d) Error: %s %s. \n",__FILE__,line_number,s, yytext);
+		return 1;
+}
 /*==   AST - PART constructs the tree ============================*/
 NODE makenode(int op, NODE s1, NODE s2, NODE s3, NODE s4,int val,char *id)
 {   int i=0;

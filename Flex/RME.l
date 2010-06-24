@@ -8,7 +8,7 @@
 					return (X);
 					
 extern int line_number; 
-extern FILE *log2;
+extern FILE *lexdbg;
 int count_newline(char*);
 void myPrintToken();
 
@@ -28,7 +28,6 @@ STRING	\"(\\.|[^\\"])*\"
 COMMENT	\(\*[^\*]*\*+([^\*\)][^\*]*\*+)*\)
 
 SIGN	(";"|"("|")"|"."|","|"["|"]")
-CLASS	{IDE}"."{IDE}
 
 %%
 "Register"		{ myPrintToken(); return(REGISTER);	}
@@ -40,29 +39,36 @@ CLASS	{IDE}"."{IDE}
 "TRUE"			{ myPrintToken(); return(TRUE);		}
 "Step"			{ myPrintToken(); return(STEP);		}
 "Scan"			{ myPrintToken(); return(SCAN);		}
-"Print"			{ myPrintToken(); return(PRINT);	}
+"Print"			{ myPrintToken(); return(PRINTV);	}
 "Execute"		{ myPrintToken(); return(EXECUTE);	}
 "Connect"		{ myPrintToken(); return(CONNECT);	}
-"N0RTH"			{ myPrintToken(); return(N0RTH);	}
-"SOUTH"			{ myPrintToken(); return(SOUTH);	}
-"WEST"			{ myPrintToken(); return(WEST);		}
-"EAST"			{ myPrintToken(); return(EAST);		}
+"NORTH"			{ myPrintToken(); 
+					yylval.string = (char*) malloc(strlen(yytext)+1);
+					strcpy(yylval.string,yytext); return(N0RTH);	}
+"SOUTH"			{ myPrintToken(); 
+					yylval.string = (char*) malloc(strlen(yytext)+1);
+					strcpy(yylval.string,yytext); return(SOUTH);	}
+"WEST"			{ myPrintToken(); 
+					yylval.string = (char*) malloc(strlen(yytext)+1);
+					strcpy(yylval.string,yytext); return(WEST);		}
+"EAST"			{ myPrintToken();
+					yylval.string = (char*) malloc(strlen(yytext)+1);
+					strcpy(yylval.string,yytext); return(EAST);		}
 "VOID"			{ myPrintToken(); return(VOID);		}
 "Mesh"			{ myPrintToken(); return(MESH);		}
 "Input"			{ myPrintToken(); return(INPUT);	}
 "Output"		{ myPrintToken(); return(OUTPUT);	}
 "var"			{ myPrintToken(); return(VAR);		}
-"f_1UN"			{ myPrintToken(); return(F_1UN);	}
-"f_2UN"			{ myPrintToken(); return(F_2UN);	}
-"f_BIN"			{ myPrintToken();return(F_BIN); 	}
-"f_PST"			{ myPrintToken();return(F_PST);	}
+"1UN"			{ myPrintToken(); return(F_1UN);	}
+"2UN"			{ myPrintToken(); return(F_2UN);	}
+"BIN"			{ myPrintToken();return(F_BIN); 	}
+"PST"			{ myPrintToken();return(F_PST);	}
 "fi"            { myPrintToken();return(FI);		}
 "if"            { myPrintToken();return(IF);		}
 "else"	        { myPrintToken();return(ELSE); 	}
 "then"			{ myPrintToken();return(THEN);		}
 "NOT"           { myPrintToken();return(NOT); 		}
 "PROCEDURE"     { myPrintToken();return(PROCEDURE); }
-{CLASS}			{ myPrintToken();return(CLASS); }
 {IDE}		    { myPrintToken();
 					yylval.string = (char*) malloc(strlen(yytext)+1);
 					strcpy(yylval.string,yytext); return(IDE); }
@@ -112,7 +118,9 @@ int count_newline(char *text)
 }
 void myPrintToken()
 {
-	#ifdef DEBUG
-		fprintf(log2,"%s",(yytext)?(yytext):("Error\n"));
-	#endif
+		if (yytext[0] == '\n')
+			fprintf(lexdbg,"%s",(yytext)?(yytext):(""));
+		else
+			fprintf(lexdbg," '%s' ",(yytext)?(yytext):(""));
+
 }
